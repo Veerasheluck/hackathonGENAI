@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 50px;
+        }
+        .chat-container {
+            max-width: 500px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        input {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #response {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+    <script>
+        async function sendMessage() {
+            let userInput = document.getElementById("userInput").value;
+            let responseBox = document.getElementById("response");
+
+            responseBox.innerText = "Processing...";
+
+            try {
+                let response = await fetch("http://localhost:5000/chat", {  // Ensure the URL is correct
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: userInput })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch data');
+                }
+
+                let data = await response.json();
+                responseBox.innerText = data.response || data.error;
+            } catch (error) {
+                responseBox.innerText = `Error: ${error.message}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>SEO Chatbot</h1>
+        <input type="text" id="userInput" placeholder="Enter a website URL or SEO question...">
+        <button onclick="sendMessage()">Submit</button>
+        <p id="response"></p>
+    </div>
+</body>
+</html>
